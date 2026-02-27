@@ -4,18 +4,25 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// SSL para bases de datos cloud (Aiven, PlanetScale, etc.)
+// Soporta variables DB_* (local) y MYSQL* (Railway las pone automático)
+const DB_HOST = process.env.DB_HOST || process.env.MYSQLHOST || 'localhost';
+const DB_PORT = parseInt(process.env.DB_PORT || process.env.MYSQLPORT) || 3306;
+const DB_USER = process.env.DB_USER || process.env.MYSQLUSER || 'root';
+const DB_PASSWORD = process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '';
+const DB_NAME = process.env.DB_NAME || process.env.MYSQLDATABASE || 'tienda_manager';
+
+// SSL para bases de datos cloud (Aiven, Railway, etc.)
 const sslConfig = process.env.DB_SSL === 'true'
     ? { rejectUnauthorized: false }
     : false;
 
 // Configuración del pool de conexiones
 const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'tienda_manager',
+    host: DB_HOST,
+    port: DB_PORT,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
     ssl: sslConfig,
     waitForConnections: true,
     connectionLimit: 10,
@@ -23,6 +30,7 @@ const pool = mysql.createPool({
     enableKeepAlive: true,
     keepAliveInitialDelay: 0
 });
+
 
 
 // Probar conexión
