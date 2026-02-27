@@ -2,7 +2,7 @@
 import './repartidor.css';
 import { getCurrentUser } from '../../services/authService.js';
 
-const API = 'http://localhost:3000/api';
+const API = '/api';
 let repMap = null;
 let repLeafletReady = false;
 let repPedidos = [];

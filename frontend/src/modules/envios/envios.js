@@ -2,7 +2,7 @@
 import './envios.css';
 import { getCurrentUser, isAdmin } from '../../services/authService.js';
 
-const API = 'http://localhost:3000/api';
+const API = '/api';
 let enviosMap = null;
 let enviosLeafletReady = false;
 let pedidosData = [];

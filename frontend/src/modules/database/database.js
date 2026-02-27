@@ -71,7 +71,7 @@ export function renderDatabase(container) {
 async function loadStats() {
   try {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-    const response = await fetch('http://localhost:3000/api/database/stats', {
+    const response = await fetch('/api/database/stats', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -93,7 +93,7 @@ async function loadStats() {
 async function loadTables() {
   try {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-    const response = await fetch('http://localhost:3000/api/database/tables', {
+    const response = await fetch('/api/database/tables', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -134,7 +134,7 @@ async function loadTables() {
 async function viewTableData(tableName) {
   try {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-    const response = await fetch(`http://localhost:3000/api/database/tables/${tableName}/data?limit=20`, {
+    const response = await fetch(`/api/database/tables/${tableName}/data?limit=20`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -186,7 +186,7 @@ async function executeQuery() {
 
   try {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-    const response = await fetch('http://localhost:3000/api/database/query', {
+    const response = await fetch('/api/database/query', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
