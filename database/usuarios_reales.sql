@@ -1,7 +1,7 @@
-﻿
+
 ========== COPIA ESTE SQL EN MYSQL WORKBENCH ==========
 
-USE tienda_manager;
+
 DELETE FROM usuarios WHERE email IN ('admin@tienda.com', 'vendedor@tienda.com');
 
 INSERT INTO usuarios (nombre, email, password_hash, rol, telefono, activo, created_at, last_login) VALUES

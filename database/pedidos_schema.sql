@@ -3,7 +3,7 @@
 -- Ejecutar en MySQL Workbench / phpMyAdmin / consola MySQL
 -- ============================================================
 
-USE tienda_manager;
+
 
 -- 1. Añadir rol repartidor a la tabla usuarios
 ALTER TABLE usuarios

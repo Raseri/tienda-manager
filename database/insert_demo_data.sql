@@ -1,4 +1,4 @@
-USE tienda_manager;
+
 
 -- Eliminar usuarios demo si existen
 DELETE FROM usuarios WHERE email IN ('admin@tienda.com', 'vendedor@tienda.com');

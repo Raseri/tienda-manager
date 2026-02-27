@@ -3,7 +3,7 @@
 -- Agregar control de lotes de inventario
 -- ============================================
 
-USE tienda_manager;
+-- Nota: no se usa USE aquí para compatibilidad con Railway y otras BDs cloud
 
 -- ============================================
 -- TABLA: lotes_inventario
@@ -27,10 +27,7 @@ CREATE TABLE IF NOT EXISTS lotes_inventario (
     INDEX idx_producto (producto_id),
     INDEX idx_fecha (fecha_entrada),
     INDEX idx_activo (activo),
-    INDEX idx_restante (cantidad_restante),
-    
-    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by) REFERENCES usuarios(id) ON DELETE SET NULL
+    INDEX idx_restante (cantidad_restante)
 ) ENGINE=InnoDB;
 
 -- ============================================
@@ -46,25 +43,41 @@ CREATE TABLE IF NOT EXISTS detalle_costo_venta (
     costo_total DECIMAL(10, 2) NOT NULL,
     
     INDEX idx_detalle_venta (detalle_venta_id),
-    INDEX idx_lote (lote_id),
-    
-    FOREIGN KEY (detalle_venta_id) REFERENCES detalles_venta(id) ON DELETE CASCADE,
-    FOREIGN KEY (lote_id) REFERENCES lotes_inventario(id) ON DELETE RESTRICT
+    INDEX idx_lote (lote_id)
 ) ENGINE=InnoDB;
 
 -- ============================================
--- Agregar campo de método de valuación a productos
+-- Agregar columnas solo si no existen (compatible con Railway)
 -- ============================================
-ALTER TABLE productos 
-ADD COLUMN IF NOT EXISTS metodo_valuacion ENUM('PEPS', 'UEPS', 'PROMEDIO') DEFAULT 'PEPS'
-AFTER activo;
+DROP PROCEDURE IF EXISTS _add_peps_columns;
 
--- ============================================
--- Agregar campo de costo promedio a productos
--- ============================================
-ALTER TABLE productos
-ADD COLUMN IF NOT EXISTS costo_promedio DECIMAL(10, 2) DEFAULT 0.00
-AFTER costo;
+DELIMITER //
+CREATE PROCEDURE _add_peps_columns()
+BEGIN
+    -- metodo_valuacion
+    IF NOT EXISTS (
+        SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'productos'
+          AND COLUMN_NAME = 'metodo_valuacion'
+    ) THEN
+        ALTER TABLE productos ADD COLUMN metodo_valuacion ENUM('PEPS','UEPS','PROMEDIO') DEFAULT 'PEPS';
+    END IF;
+
+    -- costo_promedio
+    IF NOT EXISTS (
+        SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'productos'
+          AND COLUMN_NAME = 'costo_promedio'
+    ) THEN
+        ALTER TABLE productos ADD COLUMN costo_promedio DECIMAL(10,2) DEFAULT 0.00;
+    END IF;
+END //
+DELIMITER ;
+
+CALL _add_peps_columns();
+DROP PROCEDURE IF EXISTS _add_peps_columns;
 
 -- ============================================
 -- VISTA: Resumen de lotes por producto
