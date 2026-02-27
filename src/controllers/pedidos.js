@@ -118,6 +118,18 @@ router.post('/', async (req, res) => {
         const folio = generarFolio();
         const total = productos.reduce((sum, p) => sum + (p.precio_unitario * p.cantidad), 0);
 
+        // Fallback robusto para creado_por (previene errores si el frontend envía un ID viejo/inválido)
+        let validCreadoPor = null;
+        if (creado_por) {
+            const [[userRow]] = await conn.query('SELECT id FROM usuarios WHERE id = ?', [creado_por]);
+            if (userRow) validCreadoPor = userRow.id;
+        }
+        // Si no existe, buscamos el primer usuario disponible para evitar fallo de FK, o lo dejamos null si no importa
+        if (!validCreadoPor) {
+            const [[anyUser]] = await conn.query('SELECT id FROM usuarios ORDER BY id ASC LIMIT 1');
+            validCreadoPor = anyUser ? anyUser.id : null;
+        }
+
         // Insertar pedido
         const [pedidoResult] = await conn.query(
             `INSERT INTO pedidos (folio, cliente_nombre, cliente_telefono, cliente_direccion,
@@ -125,7 +137,7 @@ router.post('/', async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, 'pendiente', ?, ?, ?, ?)`,
             [folio, cliente_nombre, cliente_telefono || null, cliente_direccion,
                 cliente_lat || 19.0413, cliente_lng || -98.2062,
-                metodo_pago || 'efectivo', total, notas || null, creado_por || 1]
+                metodo_pago || 'efectivo', total, notas || null, validCreadoPor]
         );
 
         const pedidoId = pedidoResult.insertId;
@@ -211,12 +223,23 @@ router.post('/:id/entregar', async (req, res) => {
         const [detalles] = await conn.query('SELECT * FROM detalle_pedido WHERE pedido_id = ?', [id]);
         if (!detalles.length) throw new Error('El pedido no tiene productos');
 
+        // Fallback robusto para repartidor_id (asegura que exista en DB)
+        let validRepartidor = repartidor_id || pedido.repartidor_id;
+        if (validRepartidor) {
+            const [[userRow]] = await conn.query('SELECT id FROM usuarios WHERE id = ?', [validRepartidor]);
+            if (!userRow) validRepartidor = null;
+        }
+        if (!validRepartidor) {
+            const [[anyUser]] = await conn.query('SELECT id FROM usuarios ORDER BY id ASC LIMIT 1');
+            validRepartidor = anyUser ? anyUser.id : 1;
+        }
+
         // 3. Crear venta en tabla ventas
         const folio = 'V-' + pedido.folio.replace('P-', '');
         const [ventaResult] = await conn.query(
             `INSERT INTO ventas (folio, vendedor_id, total, subtotal, metodo_pago, estado, cliente_nombre, cliente_telefono, notas)
        VALUES (?, ?, ?, ?, ?, 'completada', ?, ?, ?)`,
-            [folio, repartidor_id || pedido.repartidor_id || 1,
+            [folio, validRepartidor,
                 pedido.total, pedido.total,
                 metodo_pago || pedido.metodo_pago,
                 pedido.cliente_nombre, pedido.cliente_telefono || null,
@@ -247,7 +270,7 @@ router.post('/:id/entregar', async (req, res) => {
                 `INSERT INTO movimientos_inventario (producto_id, tipo_movimiento, cantidad, stock_anterior, stock_nuevo, referencia, usuario_id)
          VALUES (?, 'venta', ?, ?, ?, ?, ?)`,
                 [detalle.producto_id, -detalle.cantidad, stockAnterior, stockNuevo,
-                'PEDIDO-' + pedido.folio, repartidor_id || pedido.repartidor_id || 1]
+                'PEDIDO-' + pedido.folio, validRepartidor]
             );
         }
 
