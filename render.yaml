@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: tienda-manager
+    runtime: node
+    region: oregon          # Puedes cambiar a frankfurt si prefieres Europa
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000          # Render usa el puerto 10000 por defecto
+      - key: DB_HOST
+        sync: false           # Lo pones manualmente en el dashboard de Render
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: JWT_SECRET
+        sync: false           # ¡Usa un secreto seguro en producción!
+      - key: JWT_EXPIRES_IN
+        value: 7d

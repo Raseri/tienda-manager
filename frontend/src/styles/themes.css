@@ -1,0 +1,142 @@
+/* themes.css - Role-based color themes */
+
+/* ============================================
+   ADMIN THEME - Purple & Blue
+   ============================================ */
+[data-theme="admin"] {
+    /* Primary Colors */
+    --primary-color: #667eea;
+    --primary-dark: #5568d3;
+    --primary-light: #7c93f0;
+    --secondary-color: #764ba2;
+    --accent-color: #5c6ac4;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #5c6ac4 0%, #667eea 100%);
+    --gradient-accent: linear-gradient(135deg, #764ba2 0%, #667eea 50%, #5c6ac4 100%);
+
+    /* UI Colors */
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    /* Hover States */
+    --primary-hover: #5568d3;
+    --card-hover: rgba(102, 126, 234, 0.1);
+
+    /* Shadows */
+    --shadow-primary: 0 4px 20px rgba(102, 126, 234, 0.3);
+    --shadow-hover: 0 8px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   VENDEDOR THEME - Green & Teal
+   ============================================ */
+[data-theme="vendedor"] {
+    /* Primary Colors */
+    --primary-color: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #34d399;
+    --secondary-color: #14b8a6;
+    --accent-color: #0d9488;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+    --gradient-secondary: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+    --gradient-accent: linear-gradient(135deg, #14b8a6 0%, #10b981 50%, #059669 100%);
+
+    /* UI Colors */
+    --success-color: #22c55e;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #06b6d4;
+
+    /* Hover States */
+    --primary-hover: #059669;
+    --card-hover: rgba(16, 185, 129, 0.1);
+
+    /* Shadows */
+    --shadow-primary: 0 4px 20px rgba(16, 185, 129, 0.3);
+    --shadow-hover: 0 8px 30px rgba(16, 185, 129, 0.4);
+}
+
+/* ============================================
+   THEME TRANSITIONS
+   ============================================ */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ============================================
+   THEMED COMPONENTS OVERRIDE
+   ============================================ */
+
+/* Buttons */
+[data-theme] .btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: var(--shadow-primary);
+}
+
+[data-theme] .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Navigation Active State */
+[data-theme] .nav-item.active {
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-primary);
+}
+
+/* Cards with hover effect */
+[data-theme] .card:hover {
+    background-color: var(--card-hover);
+    border-color: var(--primary-color);
+}
+
+/* Sidebar Header */
+[data-theme="admin"] .app-sidebar-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+[data-theme="vendedor"] .app-sidebar-header {
+    background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+}
+
+/* Progress bars, badges, etc */
+[data-theme] .badge-primary {
+    background: var(--primary-color);
+}
+
+[data-theme] .progress-bar {
+    background: var(--gradient-primary);
+}
+
+/* Links */
+[data-theme] a:not(.btn) {
+    color: var(--primary-color);
+}
+
+[data-theme] a:not(.btn):hover {
+    color: var(--primary-dark);
+}
+
+/* Focus states */
+[data-theme] input:focus,
+[data-theme] textarea:focus,
+[data-theme] select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.1);
+}
+
+/* Charts and data visualization */
+[data-theme="admin"] .chart-primary {
+    color: #667eea;
+}
+
+[data-theme="vendedor"] .chart-primary {
+    color: #10b981;
+}

@@ -1,0 +1,70 @@
+
+# ⚡ Tienda Manager V2 — Cómo correr el proyecto
+
+================================================
+  🗂️ ESTRUCTURA DEL PROYECTO
+================================================
+
+  📁 config/          → Conexión a la base de datos
+  📁 database/        → Archivos SQL (esquema, datos demo)
+  📁 database/scripts/→ Scripts de configuración inicial
+  📁 frontend/        → Aplicación web (Vite)
+  📁 public/          → Frontend compilado (lo genera npm run build)
+  📁 src/             → Lógica del backend (auth, controllers, middleware)
+  📄 server.js        → Punto de entrada del servidor
+  📄 .env             → Variables de entorno (¡no subir a git!)
+  📄 render.yaml      → Configuración para despliegue en Render
+
+================================================
+  💻 CORRER EN LOCAL (desarrollo)
+================================================
+
+PRIMERA VEZ — instalar dependencias:
+  npm install
+  cd frontend && npm install && cd ..
+
+Terminal 1 — Backend (API):
+  npm start
+  → Abre en: http://localhost:3000
+
+Terminal 2 — Frontend (dev server):
+  cd frontend
+  npm run dev
+  → Abre en: http://localhost:5173
+
+Usuarios de prueba (modo demo):
+  👑 Admin    → admin@tienda.com       / admin123
+  🛍️ Vendedor → vendedor@tienda.com    / vendedor123
+  🛵 Pedidos  → repartidor@tienda.com  / repartidor123
+
+================================================
+  🚀 SUBIR A PRODUCCIÓN (Render)
+================================================
+
+1. Subir código a GitHub:
+   git init
+   git add .
+   git commit -m "primer commit"
+   git push origin main
+
+2. Crear base de datos gratuita en:
+   https://aiven.io  → MySQL → Plan Free
+
+3. Crear el servicio en:
+   https://render.com → New Web Service
+   - Build Command : npm install && npm run build
+   - Start Command : npm start
+
+4. En Render, agregar estas variables de entorno:
+   DB_HOST     → (host de Aiven)
+   DB_PORT     → (puerto de Aiven)
+   DB_USER     → avnadmin
+   DB_PASSWORD → (password de Aiven)
+   DB_NAME     → defaultdb
+   DB_SSL      → true
+   JWT_SECRET  → (escribe algo largo y secreto)
+   PORT        → 10000
+
+5. ¡Listo! Render te da una URL pública automáticamente 🎉
+
+================================================
