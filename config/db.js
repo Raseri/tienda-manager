@@ -38,7 +38,7 @@ async function testConnection() {
     try {
         const connection = await pool.getConnection();
         console.log('✅ Conectado a MySQL exitosamente');
-        console.log(`📊 Base de datos: ${process.env.DB_NAME}`);
+        console.log(`📊 Base de datos: ${DB_NAME}`);
         connection.release();
         return true;
     } catch (error) {
