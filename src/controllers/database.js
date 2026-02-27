@@ -82,8 +82,8 @@ router.use(authorize('admin'));
 router.get('/tables', async (req, res) => {
     try {
         const [tables] = await db.query('SHOW TABLES');
-        const tableName = `Tables_in_${process.env.DB_NAME}`;
-        const tableList = tables.map(t => t[tableName]);
+        // Object.values(t)[0] funciona sin importar el nombre de la BD
+        const tableList = tables.map(t => Object.values(t)[0]);
 
         res.json({ tables: tableList });
     } catch (error) {
@@ -175,15 +175,14 @@ router.get('/stats', async (req, res) => {
         stats.ventas = ventas[0].total;
         stats.ingresosTotales = ventas[0].ingresos || 0;
 
-        // Tamaño de la base de datos
+        // Tamaño de la base de datos (usa DATABASE() para obtener el nombre actual)
         const [size] = await db.query(
             `SELECT 
                 table_schema AS 'database',
                 SUM(data_length + index_length) / 1024 / 1024 AS 'size_mb'
              FROM information_schema.tables
-             WHERE table_schema = ?
-             GROUP BY table_schema`,
-            [process.env.DB_NAME]
+             WHERE table_schema = DATABASE()
+             GROUP BY table_schema`
         );
         stats.databaseSize = size[0]?.size_mb || 0;
 
